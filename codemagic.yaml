@@ -18,10 +18,10 @@ workflows:
       - name: Agregar plataforma iOS
         script: |
           cordova platform add ios --confirm --no-interactive
-      - name: Compilar proyecto iOS (Sin firma estricta)
+      - name: Compilar proyecto iOS (Modo sin archivo estricto)
         script: |
-          # Compilamos para simulador/dispositivo de forma genérica para extraer los binarios sin requerir Apple Developer Team pago
-          cordova build ios --release --device --no-codesign
+          # Compilamos usando build directo en lugar de archive para evitar la validación obligatoria de Apple Team
+          npx cordova build ios --debug --device
     artifacts:
       - platforms/ios/build/device/*.app
-      - platforms/ios/build/device/*.ipa
+      - platforms/ios/build/**/*.app
