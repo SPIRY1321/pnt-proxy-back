@@ -1,27 +1,42 @@
+
 workflows:
   ios-cordova-workflow:
-    name: Cordova iOS Build
+    name: Cordova iOS Build (Unsigned)
     max_build_duration: 60
     instance_type: mac_mini_m2
+
     environment:
       node: latest
       xcode: latest
+
       vars:
         XCODE_FLAG_incremental: "NO"
+
     scripts:
       - name: Instalar Cordova globalmente
         script: |
           npm install -g cordova
+
       - name: Instalar dependencias npm
         script: |
           npm install
+
       - name: Agregar plataforma iOS
         script: |
           cordova platform add ios --confirm --no-interactive
-      - name: Compilar proyecto iOS (Sin firma estricta)
+
+      - name: Compilar iOS sin firma
         script: |
-          # Compilamos para simulador/dispositivo de forma genérica para extraer los binarios sin requerir Apple Developer Team pago
-          cordova build ios --release --device --no-codesign
+          xcodebuild \
+            -workspace platforms/ios/App.xcworkspace \
+            -scheme App \
+            -configuration Release \
+            -destination 'generic/platform=iOS' \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            build
+
     artifacts:
-      - platforms/ios/build/device/*.app
-      - platforms/ios/build/device/*.ipa
+      - $HOME/Library/Developer/Xcode/DerivedData/**/Build/Products/Release-iphoneos/*.app
+      - /tmp/xcodebuild_logs/*.log
