@@ -1,0 +1,24 @@
+workflows:
+  ios-cordova-workflow:
+    name: Cordova iOS Build
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    environment:
+      node: v18.16.0
+      xcode: latest
+    scripts:
+      - name: Instalar Cordova globalmente
+        script: |
+          npm install -g cordova
+      - name: Instalar dependencias npm
+        script: |
+          npm install
+      - name: Agregar plataforma iOS
+        script: |
+          cordova platform add ios --confirm --no-interactive
+      - name: Compilar proyecto iOS
+        script: |
+          cordova build ios --release --emulator
+    artifacts:
+      - platforms/ios/build/emulator/*.app
+      - platforms/ios/build/device/*.ipa
