@@ -1,0 +1,60 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0,
+          maximum-scale=1.0, user-scalable=no">
+
+    <meta http-equiv="Content-Security-Policy"
+          content="
+          default-src 'self' data: gap: https://ssl.gstatic.com;
+          connect-src 'self' https: http:;
+          img-src 'self' data: https:;
+          style-src 'self' 'unsafe-inline';
+          script-src 'self' 'unsafe-inline';
+          ">
+
+    <title>Transparencia y Contrataciones</title>
+
+    <link rel="stylesheet" href="css/index.css">
+</head>
+
+<body>
+
+    <header class="app-header">
+        <h1>Buscador de Transparencia</h1>
+        <p>Datos Abiertos y Contrataciones</p>
+    </header>
+
+    <main class="container">
+
+        <section class="search-box">
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="Ej. Adquisición, servicio, dependencia..."
+                autocomplete="off">
+
+            <button id="btnSearch">Buscar</button>
+        </section>
+
+        <div id="loading" class="loading hidden">
+            <div class="spinner"></div>
+            <p>Cargando información...</p>
+        </div>
+
+        <div id="statusMessage"></div>
+
+        <section id="resultsContainer" class="results-list">
+        </section>
+
+    </main>
+
+    <script src="cordova.js"></script>
+    <script src="js/index.js"></script>
+
+</body>
+</html>
