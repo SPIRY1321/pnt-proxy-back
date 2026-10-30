@@ -13,18 +13,45 @@ workflows:
         XCODE_FLAG_incremental: "NO"
 
     scripts:
+
+      # 1. Instalar Cordova
       - name: Instalar Cordova globalmente
         script: |
           npm install -g cordova
 
+      # 2. Instalar dependencias del proyecto
       - name: Instalar dependencias npm
         script: |
           npm install
 
+      # 3. Agregar plataforma iOS
       - name: Agregar plataforma iOS
         script: |
-          cordova platform add ios --confirm --no-interactive
+          cordova platform add ios --save
 
+      # 4. Corregir incompatibilidad con Xcode 26
+      - name: Corregir imports incompatibles con Xcode 26
+        script: |
+          FILE1="platforms/ios/App/Plugins/cordova-plugin-advanced-http/SM_AFNetworkReachabilityManager.m"
+          FILE2="platforms/ios/App/Plugins/cordova-plugin-advanced-http/SM_AFHTTPSessionManager.m"
+
+          if [ -f "$FILE1" ]; then
+            sed -i '' '/netinet6\/in6.h/d' "$FILE1"
+          else
+            echo "No se encontró $FILE1"
+            exit 1
+          fi
+
+          if [ -f "$FILE2" ]; then
+            sed -i '' '/netinet6\/in6.h/d' "$FILE2"
+          else
+            echo "No se encontró $FILE2"
+            exit 1
+          fi
+
+          echo "Corrección aplicada correctamente."
+
+      # 5. Compilar iOS sin firma
       - name: Compilar iOS sin firma
         script: |
           xcodebuild \
@@ -37,6 +64,7 @@ workflows:
             CODE_SIGN_IDENTITY="" \
             build
 
+    # 6. Archivos generados
     artifacts:
       - $HOME/Library/Developer/Xcode/DerivedData/**/Build/Products/Release-iphoneos/*.app
       - /tmp/xcodebuild_logs/*.log
