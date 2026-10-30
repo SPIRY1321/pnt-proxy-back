@@ -18,10 +18,10 @@ workflows:
       - name: Agregar plataforma iOS
         script: |
           cordova platform add ios --confirm --no-interactive
-      - name: Compilar proyecto iOS omitiendo errores de headers privados
+      - name: Compilar proyecto iOS (Sin firma estricta)
         script: |
-          # Forzamos la compilación pasando flags a xcodebuild para que ignore el error de encabezados privados en plugins
-          npx cordova build ios --debug --buildFlag="-Wno-error=private-header" --buildFlag="GCC_TREAT_WARNINGS_AS_ERRORS=NO"
+          # Compilamos para simulador/dispositivo de forma genérica para extraer los binarios sin requerir Apple Developer Team pago
+          cordova build ios --release --device --no-codesign
     artifacts:
-      - platforms/ios/build/emulator/*.app
-      - platforms/ios/build/**/*.app
+      - platforms/ios/build/device/*.app
+      - platforms/ios/build/device/*.ipa
