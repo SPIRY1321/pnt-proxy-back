@@ -7,7 +7,6 @@ workflows:
       node: latest
       xcode: latest
       vars:
-        # Esto evita que los errores de código antiguo de los plugins detengan la compilación
         XCODE_FLAG_incremental: "NO"
     scripts:
       - name: Instalar Cordova globalmente
@@ -19,8 +18,10 @@ workflows:
       - name: Agregar plataforma iOS
         script: |
           cordova platform add ios --confirm --no-interactive
-      - name: Compilar proyecto iOS para Dispositivo (.ipa)
+      - name: Compilar proyecto iOS (Sin firma estricta)
         script: |
+          # Compilamos para simulador/dispositivo de forma genérica para extraer los binarios sin requerir Apple Developer Team pago
           cordova build ios --release --device --no-codesign
     artifacts:
+      - platforms/ios/build/device/*.app
       - platforms/ios/build/device/*.ipa
