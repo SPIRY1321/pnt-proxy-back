@@ -4,8 +4,11 @@ workflows:
     max_build_duration: 60
     instance_type: mac_mini_m2
     environment:
-      node: latest        # <-- Actualizado aquí
+      node: latest
       xcode: latest
+      vars:
+        # Esto evita que los errores de código antiguo de los plugins detengan la compilación
+        XCODE_FLAG_incremental: "NO"
     scripts:
       - name: Instalar Cordova globalmente
         script: |
@@ -16,9 +19,8 @@ workflows:
       - name: Agregar plataforma iOS
         script: |
           cordova platform add ios --confirm --no-interactive
-      - name: Compilar proyecto iOS
+      - name: Compilar proyecto iOS para Dispositivo (.ipa)
         script: |
-          cordova build ios --release --emulator
+          cordova build ios --release --device --no-codesign
     artifacts:
-      - platforms/ios/build/emulator/*.app
       - platforms/ios/build/device/*.ipa
